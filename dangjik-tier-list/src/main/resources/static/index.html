@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>당직사관 티어리스트</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+
+<header>
+  <h1>🎖️ 당직사관 티어리스트</h1>
+  <nav>
+    <a href="/index.html">홈</a>
+    <a href="/admin.html">관리자</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- 티어 안내 -->
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;align-items:center;">
+    <span style="color:var(--text-sub);font-size:.85rem;margin-right:4px;">티어 기준:</span>
+    <span class="tier-badge tier-CHALLENGER">챌린저 상위 3%</span>
+    <span class="tier-badge tier-DIAMOND">다이아 ~10%</span>
+    <span class="tier-badge tier-PLATINUM">플래티넘 ~25%</span>
+    <span class="tier-badge tier-GOLD">골드 ~50%</span>
+    <span class="tier-badge tier-SILVER">실버 ~75%</span>
+    <span class="tier-badge tier-BRONZE">브론즈</span>
+  </div>
+
+  <!-- 승점 안내 -->
+  <div class="card" style="margin-bottom:28px;font-size:.875rem;line-height:1.8;">
+    <strong style="display:block;margin-bottom:6px;">📋 승점 기준</strong>
+    <span style="color:var(--text-sub);">
+      예상 불출시간 18:00 / 예상 반납시간 21:30 &nbsp;|&nbsp;
+      불출 30분 이상 빠르면 <span style="color:#00e676;font-weight:700">+15점</span> /
+      30분 이상 늦으면 <span style="color:#ef5350;font-weight:700">-15점</span>
+      (선형 비례) &nbsp;|&nbsp;
+      반납 30분 이상 늦으면 <span style="color:#00e676;font-weight:700">+15점</span> /
+      30분 이상 빠르면 <span style="color:#ef5350;font-weight:700">-15점</span>
+    </span>
+  </div>
+
+  <!-- 당직사관 카드 그리드 -->
+  <div id="officerGrid" class="officer-grid">
+    <div class="empty"><div class="icon">⏳</div>불러오는 중...</div>
+  </div>
+
+</main>
+
+<div id="toast"></div>
+<script src="/js/app.js"></script>
+<script>initIndexPage();</script>
+</body>
+</html>

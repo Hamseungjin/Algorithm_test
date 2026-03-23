@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>관리자 페이지 - 당직사관 티어리스트</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+
+<header>
+  <h1>🎖️ 당직사관 티어리스트</h1>
+  <nav>
+    <a href="/index.html">홈</a>
+    <a href="/admin.html">관리자</a>
+  </nav>
+</header>
+
+<main>
+  <h2 style="margin-bottom:24px;font-size:1.3rem;">⚙️ 관리자 페이지</h2>
+
+  <!-- ── 당직사관 섹션 ── -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+    <h3 style="font-size:1rem;">당직사관 목록</h3>
+    <button class="btn btn-primary" onclick="openAddOfficerModal()">+ 당직사관 추가</button>
+  </div>
+  <div id="adminOfficerList" style="margin-bottom:40px;">
+    <div class="empty"><div class="icon">⏳</div>불러오는 중...</div>
+  </div>
+
+  <!-- ── 계급 섹션 ── -->
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+    <h3 style="font-size:1rem;">계급 관리</h3>
+  </div>
+  <div class="card" style="margin-bottom:12px;">
+    <form id="rankForm" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+      <div class="form-group" style="margin-bottom:0;flex:1;min-width:120px;">
+        <label>계급명</label>
+        <input id="rankName" type="text" placeholder="예: 병장" required/>
+      </div>
+      <div class="form-group" style="margin-bottom:0;width:100px;">
+        <label>순서 (낮을수록 상위)</label>
+        <input id="rankOrder" type="number" placeholder="1" min="1"/>
+      </div>
+      <button class="btn btn-primary" type="submit" style="height:40px;align-self:flex-end;">추가</button>
+    </form>
+  </div>
+  <div class="card">
+    <div id="adminRankList"></div>
+  </div>
+
+</main>
+
+<!-- ════════════════════════════════════════
+     MODALS
+     ════════════════════════════════════════ -->
+
+<!-- 관리자 인증 -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <h3>🔐 관리자 로그인</h3>
+    <form id="authForm">
+      <div class="form-group">
+        <label>비밀번호</label>
+        <input id="authPwInput" type="password" placeholder="관리자 비밀번호" required autofocus/>
+      </div>
+      <p id="authError" style="color:#ef5350;font-size:.85rem;margin-bottom:8px;"></p>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="submit">확인</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 당직사관 추가/수정 -->
+<div class="modal-overlay" id="officerModal">
+  <div class="modal">
+    <h3 id="officerModalTitle">당직사관 추가</h3>
+    <form id="officerForm">
+      <input type="hidden" id="officerEditId"/>
+      <div class="form-group">
+        <label>이름</label>
+        <input id="officerName" type="text" placeholder="홍길동" required/>
+      </div>
+      <div class="form-group">
+        <label>계급</label>
+        <select id="officerRank" class="rank-select" required></select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" type="button" onclick="closeModal('officerModal')">취소</button>
+        <button class="btn btn-primary" type="submit">저장</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 당직 기록 추가/수정 -->
+<div class="modal-overlay" id="recordModal">
+  <div class="modal">
+    <h3 id="recordModalTitle">당직 기록 추가</h3>
+    <form id="recordForm">
+      <input type="hidden" id="recordOfficerId"/>
+      <input type="hidden" id="recordEditId"/>
+      <div class="form-group">
+        <label>날짜</label>
+        <input id="recordDate" type="date" required/>
+      </div>
+      <div class="form-group">
+        <label>핸드폰 불출시간 (예상: 18:00)</label>
+        <input id="distTime" type="time" required/>
+      </div>
+      <div class="form-group">
+        <label>핸드폰 반납시간 (예상: 21:30)</label>
+        <input id="returnTime" type="time" required/>
+      </div>
+      <div class="form-group">
+        <label>특이사항</label>
+        <textarea id="recordNotes" placeholder="당직 중 특이사항을 기록하세요..."></textarea>
+      </div>
+      <div style="font-size:.8rem;color:var(--text-sub);margin-bottom:14px;">
+        ✅ 불출 30분 이상 빠르면 <strong style="color:#00e676">+15점</strong> /
+        30분 이상 늦으면 <strong style="color:#ef5350">-15점</strong><br/>
+        ✅ 반납 30분 이상 늦으면 <strong style="color:#00e676">+15점</strong> /
+        30분 이상 빠르면 <strong style="color:#ef5350">-15점</strong>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" type="button" onclick="closeModal('recordModal')">취소</button>
+        <button class="btn btn-primary" type="submit">저장</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 기록 관리 -->
+<div class="modal-overlay" id="recordsModal">
+  <div class="modal" style="max-width:780px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h3 id="recordsModalTitle">기록 관리</h3>
+      <button class="btn btn-primary" id="addRecordFromModal">+ 기록 추가</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>날짜</th>
+            <th>불출</th>
+            <th>불출점수</th>
+            <th>반납</th>
+            <th>반납점수</th>
+            <th>특이사항</th>
+            <th>액션</th>
+          </tr>
+        </thead>
+        <tbody id="adminRecordsBody"></tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('recordsModal')">닫기</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="/js/admin.js"></script>
+<script>initAdminPage();</script>
+</body>
+</html>
