@@ -5,141 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>공군 해커톤 신청서</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
-  <style>
-    .common-line-height { line-height: 2; }
- 
-    /* ── 동의서 체크 UI ── */
-    .consent-block {
-      border: 1px solid #dee2e6;
-      border-radius: 8px;
-      overflow: hidden;
-      font-size: 13px;
-    }
-    .consent-block .all-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      background: #f8f9fa;
-      border-bottom: 1px solid #dee2e6;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 13px;
-      user-select: none;
-    }
-    .consent-block .item-row {
-      padding: 8px 12px;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    .consent-block .item-row:last-child {
-      border-bottom: none;
-    }
-    .consent-block .item-top {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-    }
-    .item-label {
-      flex: 1;
-      line-height: 1.5;
-      cursor: pointer;
-      color: #212529;
-      font-size: 13px;
-      margin: 0;
-    }
-    .toggle-detail {
-      display: none;
-      margin-top: 8px;
-      padding: 10px 12px;
-      background: #f8f9fa;
-      border-radius: 6px;
-      border: 1px solid #e9ecef;
-      font-size: 12px;
-      color: #495057;
-      line-height: 1.7;
-    }
-    .toggle-detail.open {
-      display: block;
-    }
-    .toggle-detail table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      margin-top: 6px;
-    }
-    .toggle-detail table th {
-      background: #fff;
-      border: 1px solid #dee2e6;
-      padding: 5px 8px;
-      font-weight: 600;
-      color: #212529;
-      white-space: nowrap;
-      width: 130px;
-      vertical-align: top;
-    }
-    .toggle-detail table td {
-      border: 1px solid #dee2e6;
-      padding: 5px 8px;
-      color: #495057;
-    }
-    .toggle-detail .warn-text {
-      margin-top: 8px;
-      padding: 6px 10px;
-      background: #fff3cd;
-      border-left: 3px solid #ffc107;
-      border-radius: 4px;
-      font-size: 11px;
-      color: #856404;
-    }
-    .view-btn {
-      font-size: 11px;
-      color: #0d6efd;
-      border: none;
-      background: none;
-      cursor: pointer;
-      text-decoration: underline;
-      white-space: nowrap;
-      padding: 0;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .badge-req {
-      font-size: 10px;
-      padding: 1px 6px;
-      border-radius: 4px;
-      background: #f8d7da;
-      color: #842029;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .consent-status {
-      font-size: 11px;
-      color: #6c757d;
-      margin-top: 4px;
-    }
-    .consent-status.complete {
-      color: #198754;
-      font-weight: 600;
-    }
-    input[type="checkbox"].consent-cb {
-      width: 15px;
-      height: 15px;
-      flex-shrink: 0;
-      margin-top: 2px;
-      cursor: pointer;
-      accent-color: #0d6efd;
-    }
-  </style>
 </head>
 <body>
  
 <div class="row mt-5 justify-content-center">
   <div class="col-sm-12 col-md-12 px-md-5">
     <div class="container py-4">
- 
-      <!-- ════════════════════════════════════
-           주의사항
-           ════════════════════════════════════ -->
       <div class="row py-4 border">
         <div class="col-sm-12 py-1">
           ※ 어떤 이유를 불문하고 가명, 차명을 통한 신청 불가하며, 참가권 양도 또한 불가능
@@ -151,10 +22,6 @@
           ※ 멘토링은 팀원 일부 참가 가능하며, 본선은 팀 전원 참석(필수)
         </div>
       </div>
- 
-      <!-- ════════════════════════════════════
-           인지 경로
-           ════════════════════════════════════ -->
       <div class="row py-4 border">
         <div class="col-sm-12 col-md-3 border-end d-flex align-items-center justify-content-center">
           <p class="h5 fw-bold text-center">
@@ -189,10 +56,6 @@
           </div>
         </div>
       </div>
- 
-      <!-- ════════════════════════════════════
-           제출 안내
-           ════════════════════════════════════ -->
       <div class="row py-4 border">
         <p class="h5 text-center common-line-height">
           상기 작성 내용은 사실과 다름이 없으며,<br>
@@ -208,10 +71,6 @@
           공군 참모총장 귀하
         </p>
       </div>
- 
-      <!-- ════════════════════════════════════
-           제출 파일 양식 (다운로드)
-           ════════════════════════════════════ -->
       <div class="row py-4 border">
         <p class="h5 text-center fw-bold">제출 파일 양식</p>
  
@@ -253,10 +112,6 @@
           </a>
         </div>
       </div>
- 
-      <!-- ════════════════════════════════════
-           서류 제출란
-           ════════════════════════════════════ -->
       <div class="row py-4 border">
         <p class="h5 text-center fw-bold">서류 제출란</p>
  
@@ -270,12 +125,6 @@
             (띄어쓰기, [, ], _ 외 특수문자 X)
           </span>
         </p>
- 
-        <!-- ────────────────────────────────────
-             [수정] 개인정보제공동의서
-             기존: <input type="file" id="personal-info-file">
-             변경: 체크형 동의 UI + <input type="hidden">
-             ──────────────────────────────────── -->
         <div class="position-relative col-sm-12 col-md-6 py-2">
           <label class="form-label">
             개인정보제공동의서(신청서)<span class="text-danger">*</span>
@@ -370,27 +219,17 @@
           <span id="personal-info-file-invalid-feedback" class="invalid-tooltip"></span>
           <p class="consent-status mt-1" id="personal-status">0 / 2 항목 동의 완료</p>
         </div>
- 
-        <!-- ────────────────────────────────────
-             [수정] 저작권동의서 (서약서)
-             기존: <input type="file" id="copyright-file">
-             변경: 체크형 동의 UI + <input type="hidden">
-             ──────────────────────────────────── -->
         <div class="position-relative col-sm-12 col-md-6 py-2">
           <label class="form-label">
             저작권동의서(서약서)<span class="text-danger">*</span>
           </label>
  
           <div class="consent-block" id="consent-copy">
- 
-            <!-- 전체 선택 -->
             <div class="all-row" onclick="toggleAll('copy')">
               <input class="consent-cb" type="checkbox" id="copy-all"
                      onclick="event.stopPropagation(); toggleAll('copy')">
               <span>서약서 전체 선택</span>
             </div>
- 
-            <!-- 항목 1: 저작권·특허 책임 -->
             <div class="item-row">
               <div class="item-top">
                 <input class="consent-cb" type="checkbox" id="c1" class="copy-item"
@@ -407,8 +246,6 @@
                 </p>
               </div>
             </div>
- 
-            <!-- 항목 2: 작품 귀속 및 이용 허락 -->
             <div class="item-row">
               <div class="item-top">
                 <input class="consent-cb" type="checkbox" id="c2" class="copy-item"
@@ -426,8 +263,6 @@
                 <p class="warn-text">작품은 반환되지 않으므로 제출 전 원본 보관을 권장합니다.</p>
               </div>
             </div>
- 
-            <!-- 항목 3: 분쟁 해결 확약 -->
             <div class="item-row">
               <div class="item-top">
                 <input class="consent-cb" type="checkbox" id="c3" class="copy-item"
@@ -452,10 +287,6 @@
           <span id="copyright-file-invalid-feedback" class="invalid-tooltip"></span>
           <p class="consent-status mt-1" id="copy-status">0 / 3 항목 동의 완료</p>
         </div>
- 
-        <!-- ────────────────────────────────────
-             아이디어기획서 — 기존 그대로
-             ──────────────────────────────────── -->
         <div class="position-relative col-sm-12 col-md-6 py-2">
           <label for="idea-plan-file" class="form-label">
             아이디어기획서<span class="text-danger">*</span>
@@ -464,10 +295,6 @@
                  id="idea-plan-file" name="idea-plan-file">
           <span id="idea-plan-file-invalid-feedback" class="invalid-tooltip"></span>
         </div>
- 
-        <!-- ────────────────────────────────────
-             아이디어요약서 — 기존 그대로
-             ──────────────────────────────────── -->
         <div class="position-relative col-sm-12 col-md-6 py-2">
           <label for="idea-summary-file" class="form-label">
             아이디어요약서<span class="text-danger">*</span>
@@ -481,10 +308,6 @@
           * 용량제한 : 각 파일당 5MB &nbsp;|&nbsp; 확장자 : PDF
         </div>
       </div>
- 
-      <!-- ════════════════════════════════════
-           제출 / 취소
-           ════════════════════════════════════ -->
       <div class="row py-4 align-items-center justify-content-center">
         <div class="col-md-3 col-sm-12"></div>
         <div class="col-md-4 col-sm-12 d-flex justify-content-around">

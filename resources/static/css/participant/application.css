@@ -33,3 +33,128 @@
 .team-th-main-group {
     width: 175px;
 }
+
+/* ── applicationInfo ── */
+.common-line-height { line-height: 2; }
+
+/* ── 동의서 체크 UI ── */
+.consent-block {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 13px;
+}
+.consent-block .all-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  user-select: none;
+}
+.consent-block .item-row {
+  padding: 8px 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.consent-block .item-row:last-child {
+  border-bottom: none;
+}
+.consent-block .item-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.item-label {
+  flex: 1;
+  line-height: 1.5;
+  cursor: pointer;
+  color: #212529;
+  font-size: 13px;
+  margin: 0;
+}
+.toggle-detail {
+  display: none;
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+  font-size: 12px;
+  color: #495057;
+  line-height: 1.7;
+}
+.toggle-detail.open {
+  display: block;
+}
+.toggle-detail table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 6px;
+}
+.toggle-detail table th {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  padding: 5px 8px;
+  font-weight: 600;
+  color: #212529;
+  white-space: nowrap;
+  width: 130px;
+  vertical-align: top;
+}
+.toggle-detail table td {
+  border: 1px solid #dee2e6;
+  padding: 5px 8px;
+  color: #495057;
+}
+.toggle-detail .warn-text {
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: #fff3cd;
+  border-left: 3px solid #ffc107;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #856404;
+}
+.view-btn {
+  font-size: 11px;
+  color: #0d6efd;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-decoration: underline;
+  white-space: nowrap;
+  padding: 0;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.badge-req {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #f8d7da;
+  color: #842029;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.consent-status {
+  font-size: 11px;
+  color: #6c757d;
+  margin-top: 4px;
+}
+.consent-status.complete {
+  color: #198754;
+  font-weight: 600;
+}
+input[type="checkbox"].consent-cb {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: #0d6efd;
+}

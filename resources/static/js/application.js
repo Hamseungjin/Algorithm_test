@@ -1,4 +1,3 @@
- 
 const getApplicationInfo = () => {
     return {
         contestField: $('#contest-field').val(),
@@ -219,17 +218,14 @@ const submitApplication = async (e) => {
     /* ↑↑↑ [추가] 끝 */
  
  
-    /* ↓↓↓ [수정] fileSelectors 에서 personal-info-file, copyright-file 제거.
+    /* ↓↓↓ [수정]
               두 항목은 이제 type="hidden" 이므로 FormData 에 파일 append 불필요.
               setFileInfo 는 유지 (fileMeta 마커 기록 목적으로 계속 호출됨).  */
     const formData = new FormData();
     const fileSelectors = [
-        // { selector: '#copyright-file',      partName: 'copyrightFile' },    // [삭제] 체크형으로 전환
-        // { selector: '#personal-info-file',  partName: 'personalInfoFile' }, // [삭제] 체크형으로 전환
         { selector: '#idea-plan-file',    partName: 'ideaPlanFile' },
         { selector: '#idea-summary-file', partName: 'ideaSummaryFile' }
     ];
-    /* ↑↑↑ [수정] 끝 */
  
     for (const {selector, partName} of fileSelectors) {
         // ① 메타 정보 채우기 — 기존 그대로
