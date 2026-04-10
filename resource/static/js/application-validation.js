@@ -340,12 +340,17 @@ const validateSurveyInfo = () => {
 }
 
 const validateFilesInfo = () => {
+    let copyrightFile = $('#copyright-file');
+    notBlank(copyrightFile, "저작권 동의서 파일을 선택하세요.");
 
     let ideaPlanFile = $('#idea-plan-file');
     notBlank(ideaPlanFile, "아이디어 기획서 파일을 선택하세요.");
 
     let ideaSummaryFile = $('#idea-summary-file');
     notBlank(ideaSummaryFile, "아이디어 요약서 파일을 선택하세요.");
+
+    let personalInfoFile = $('#personal-info-file');
+    notBlank(personalInfoFile, "개인정보제공 동의서를 선택하세요.");
 
     // 파일 용량 제한 처리 : notblank 안에서 switch case로 예외처리
 }
