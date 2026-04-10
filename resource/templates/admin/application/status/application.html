@@ -1,19 +1,17 @@
 <!--     제출자료       -->
 <div class="tab-pane fade" id="bordered-application">
 
-    <div class="row" id = "top">
-        <div class="col-lg-3 col-md-4 label align-self-center">개인정보제공 동의서</div>
-        <div class="col-lg-9 col-md-8" id="personal-info-file">
-            <button type="button" class="btn btn-outline-success"><i class="fa fa-download"></i>다운로드</button>
-            <button type="button" class="btn btn-outline-primary"><i class="fa fa-search"></i>확인</button>
+    <div class="row" id="top">
+        <div class="col-lg-3 col-md-4 label align-self-center">개인정보 수집·이용·제공 동의</div>
+        <div class="col-lg-9 col-md-8">
+            <span class="consent-badge-agreed">동의완료</span>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-lg-3 col-md-4 label align-self-center">저작권 동의서</div>
-        <div class="col-lg-9 col-md-8" id="copyright-file">
-            <button type="button" class="btn btn-outline-success"><i class="fa fa-download"></i>다운로드</button>
-            <button type="button" class="btn btn-outline-primary"><i class="fa fa-search"></i>확인</button>
+        <div class="col-lg-3 col-md-4 label align-self-center">서약서</div>
+        <div class="col-lg-9 col-md-8">
+            <span class="consent-badge-agreed">동의완료</span>
         </div>
     </div>
 
@@ -62,5 +60,9 @@
 <style>
     #top {
         margin-top: 1rem;
+    }
+    .consent-badge-agreed {
+        display: inline-block; padding: .25rem .75rem;
+        background: #198754; color: #fff; border-radius: .25rem; font-size: .85rem;
     }
 </style>

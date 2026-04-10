@@ -1,0 +1,90 @@
+/* ── 동의서 카드 ── */
+.consent-card {
+  border: 1px solid #dee2e6;
+  border-radius: .375rem;
+  margin-bottom: 1rem;
+}
+
+.consent-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .75rem 1rem;
+  background: #f8f9fa;
+  cursor: pointer;
+  user-select: none;
+}
+
+.consent-card-header .arrow {
+  transition: transform .25s;
+  font-size: .85rem;
+}
+
+.consent-card-header.open .arrow {
+  transform: rotate(180deg);
+}
+
+.consent-card-body {
+  display: none;
+  padding: 1rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.consent-card-header.open + .consent-card-body {
+  display: block;
+}
+
+/* ── 상세 테이블 ── */
+.consent-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .85rem;
+  margin-bottom: .75rem;
+}
+
+.consent-table th,
+.consent-table td {
+  border: 1px solid #dee2e6;
+  padding: .4rem .6rem;
+  vertical-align: top;
+}
+
+.consent-table th {
+  background: #f0f0f0;
+  white-space: nowrap;
+  width: 25%;
+}
+
+/* ── 개별 항목 구분선 ── */
+.consent-item {
+  padding: .75rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.consent-item:last-child {
+  border-bottom: none;
+}
+
+/* ── 전체 동의 행 ── */
+.consent-all-row {
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  padding: .5rem 1rem;
+  border-radius: 0 0 .375rem .375rem;
+}
+
+/* ── 동의 상태 피드백 ── */
+.consent-feedback-area {
+  position: relative;
+  min-height: 1.5rem;
+}
+
+/* ── 읽기 전용 뷰 배지 ── */
+.consent-badge-agreed {
+  display: inline-block;
+  padding: .25rem .75rem;
+  background: #198754;
+  color: #fff;
+  border-radius: .25rem;
+  font-size: .85rem;
+}

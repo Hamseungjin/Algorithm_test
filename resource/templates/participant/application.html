@@ -6,6 +6,7 @@
   <title>해커톤평가체계</title>
   <th:block th:include="common/include/include-link"/>
   <link rel="stylesheet" th:href="@{/css/participant/application.css}">
+  <link rel="stylesheet" th:href="@{/css/participant/consent.css}">
 </head>
 <body>
   <header th:replace="common/layout/header"></header>
@@ -44,6 +45,7 @@
   <script th:src="@{/js/application.js}"></script>
   <script th:src="@{/js/application-validation.js}"></script>
   <script th:src="@{/js/application-duplicate.js}"></script>
+  <script th:src="@{/js/consent.js}"></script>
   <script th:inline="javascript">
     $(document).ready(function(){
       $('[data-toggle="tooltip"]').tooltip();

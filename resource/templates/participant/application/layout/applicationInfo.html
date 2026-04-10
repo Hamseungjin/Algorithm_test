@@ -43,7 +43,6 @@
       <div class="row py-4 border">
         <p class="h5 text-center fw-bold">제출 파일 양식</p>
         <p class="h6 text-center text-danger">※ 모든 파일은 작성 후 <span class="fw-bold">pdf</span>로 변환하여 제출하시기 바랍니다.</p>
-        <p class="h6 text-center text-danger mb-4">※ <span class="fw-bold">개인정보제공 동의서</span> 안내 : 팀원이 여러명일 경우 <span class="fw-bold">하나의 파일</span>로 합쳐서 제출하시기 바랍니다.</p>
         <p class="h6 text-center text-danger mb-4">※ <span class="fw-bold">지정공모(자유공모) 선택 후 아이디어기획서 및 요약서 양식 확인</span></p>
 
         <div class="position-relative col-sm-12 col-md-3 py-2">
@@ -67,21 +66,13 @@
              target="_blank" id="sample-summary-file">[자유공모]아이디어 요약서.hwp</a>
         </div>
       </div>
-      <!--  동의서, 기획서 등    -->
+      <!--  동의서 (체크형 UI)  -->
+      <div th:replace="participant/application/layout/consentSection :: consentForms"></div>
+      <!--  서류 제출란 (아이디어기획서/요약서만)  -->
       <div class="row py-4 border">
         <p class="h5 text-center fw-bold">서류 제출란</p>
         <p class="h6 text-center text-danger mb-4">※ 주의 : <span class="fw-bold">1면 1페이지</span>로 저장하여 업로드하시기 바랍니다.</p>
-        <p class="h6 text-center text-danger mb-4">※ 주의 : <span class="fw-bold">파일명은 팀명_동의서/팀명_기획서 형식으로 업로드 해주시기 바랍니다. (띄어쓰기, [, ], _ 외 특수문자 X)</span></p>
-        <div class="position-relative col-sm-12 col-md-6 py-2">
-          <label for="personal-info-file" class="form-label">개인정보제공동의서(신청서)<span class="text-danger">*</span></label>
-          <input class="form-control w-75 w-sm-100" type="file" id="personal-info-file" name="personal-info-file">
-          <span id="personal-info-file-invalid-feedback" class="invalid-tooltip"></span>
-        </div>
-        <div class="position-relative col-sm-12 col-md-6 py-2">
-          <label for="copyright-file" class="form-label">저작권동의서<span class="text-danger">*</span></label>
-          <input class="form-control w-75 w-sm-100" type="file" id="copyright-file" name="copyright-file">
-          <span id="copyright-file-invalid-feedback" class="invalid-tooltip"></span>
-        </div>
+        <p class="h6 text-center text-danger mb-4">※ 주의 : <span class="fw-bold">파일명은 팀명_기획서 형식으로 업로드 해주시기 바랍니다. (띄어쓰기, [, ], _ 외 특수문자 X)</span></p>
         <div class="position-relative col-sm-12 col-md-6 py-2">
           <label for="idea-plan-file" class="form-label">아이디어기획서<span class="text-danger">*</span></label>
           <input class="form-control w-75 w-sm-100" type="file" id="idea-plan-file" name="idea-plan-file">

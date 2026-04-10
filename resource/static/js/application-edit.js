@@ -102,6 +102,16 @@ const getExtension = fileName => {
 }
 
 const setFileInfo = async (selector) => {
+    // 동의서: hidden input에서 동의 여부만 기록
+    if (selector === '#personal-info-file' || selector === '#copyright-file') {
+        const agreed = $(selector).val() === 'AGREED';
+        switch (selector) {
+            case '#personal-info-file': fileMeta.personalInfoFileInfo = { agreed }; break;
+            case '#copyright-file':    fileMeta.copyrightFileInfo    = { agreed }; break;
+        }
+        return;
+    }
+
     const $target = $(selector);
     const file = $target[0]?.files?.[0];
     if (!file) return;
@@ -109,14 +119,11 @@ const setFileInfo = async (selector) => {
     const origFileName = file.name;
     const extension = getExtension(origFileName);
 
-
     const meta = { origFileName, extension};
 
     switch (selector) {
-        case '#copyright-file':    fileMeta.copyrightFileInfo   = meta; break;
         case '#idea-plan-file':   fileMeta.ideaPlanFileInfo    = meta; break;
         case '#idea-summary-file':fileMeta.ideaSummaryFileInfo = meta; break;
-        case '#personal-info-file':fileMeta.personalInfoFileInfo= meta; break;
         default: break;
     }
 }
@@ -128,6 +135,8 @@ const getErrorMessage = () => {
         else if(elem.includes('participant-motivation')) msg +=  '참가동기*' + ' : ' + $(`#participant-motivation-invalid-feedback`).text() + '\n';
         else if(elem.includes('recognition-path')) msg +=  '인지경로*' + ' : ' + $(`#recognition-path-invalid-feedback`).text() + '\n';
         else if(elem.includes('member')) msg +=  '팀원정보*' + ' : ' + '팀원정보를 확인하세요.' + '\n';
+        else if(elem === 'personal-info-file') msg += '개인정보 동의서 : 모든 항목에 동의해주세요.\n';
+        else if(elem === 'copyright-file') msg += '서약서 : 모든 항목에 동의해주세요.\n';
         else msg += $(`label[for='${elem}']`).text() + ' : ' + $(`#${elem}-invalid-feedback`).text() + '\n';
     })
     return msg;
@@ -141,12 +150,15 @@ const fileMeta = {
 
 const submitApplication = async (e) => {
     e.preventDefault();
+    // 동의서 메타 정보 먼저 채우기 (hidden input → fileMeta)
     const formData = new FormData();
+    await setFileInfo('#personal-info-file');
+    await setFileInfo('#copyright-file');
+
+    // 파일 업로드 대상 (아이디어기획서/요약서만)
     const fileSelectors = [
-        { selector: '#copyright-file',     partName: 'copyrightFile' },
         { selector: '#idea-plan-file',    partName: 'ideaPlanFile' },
-        { selector: '#idea-summary-file', partName: 'ideaSummaryFile' },
-        { selector: '#personal-info-file',partName: 'personalInfoFile' }
+        { selector: '#idea-summary-file', partName: 'ideaSummaryFile' }
     ];
     for (const {selector, partName} of fileSelectors) {
         // ① 메타 정보 채우기
@@ -155,7 +167,7 @@ const submitApplication = async (e) => {
         // ② 실제 파일을 FormData 에 추가
         const file = $(selector)[0]?.files?.[0];
         if (file) {
-            formData.append(partName, file);   // 백엔드가 기대하는 key 이름
+            formData.append(partName, file);
         }
     }
 
@@ -586,19 +598,19 @@ const notBlankFile = (elem, message) => {
 }
 
 const validateFilesInfo = () => {
-    let copyrightFile = $('#copyright-file');
-    notBlankFile(copyrightFile, "저작권 동의서 파일을 선택하세요.");
+    // 동의서 검증 (hidden input)
+    let personalInfoConsent = $('#personal-info-file');
+    notBlank(personalInfoConsent, "개인정보 수집·이용·제공 동의서의 모든 항목에 동의해주세요.");
 
+    let copyrightConsent = $('#copyright-file');
+    notBlank(copyrightConsent, "서약서의 모든 항목에 동의해주세요.");
+
+    // 파일 검증 (아이디어기획서/요약서)
     let ideaPlanFile = $('#idea-plan-file');
     notBlankFile(ideaPlanFile, "아이디어 기획서 파일을 선택하세요.");
 
     let ideaSummaryFile = $('#idea-summary-file');
     notBlankFile(ideaSummaryFile, "아이디어 요약서 파일을 선택하세요.");
-
-    let personalInfoFile = $('#personal-info-file');
-    notBlankFile(personalInfoFile, "개인정보제공 동의서를 선택하세요.");
-
-    // 파일 용량 제한 처리 : notblank File
 }
 
 const switchMemberInfoRow = (e) => {

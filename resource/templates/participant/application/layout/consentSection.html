@@ -1,0 +1,191 @@
+<div th:fragment="consentForms">
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- [동의서 1] 개인정보 수집·이용·제공 동의서                    -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="row py-4 border">
+    <p class="h5 text-center fw-bold">개인정보 수집·이용·제공 동의서<span class="text-danger">*</span></p>
+
+    <div class="col-sm-12 px-4">
+      <!-- 카드: 항목 1 — 개인정보 수집 및 이용 동의 -->
+      <div class="consent-card">
+        <div class="consent-card-header" id="consent-header-pi-1" onclick="toggleDetail('consent-header-pi-1')">
+          <span class="fw-bold">1. 개인정보 수집 및 이용 동의 (필수)</span>
+          <span class="arrow">&#9660;</span>
+        </div>
+        <div class="consent-card-body">
+          <table class="consent-table">
+            <tr>
+              <th>수집·이용자</th>
+              <td>대한민국 공군, 공동주관, 후원기관 및 협력사</td>
+            </tr>
+            <tr>
+              <th>이용 목적</th>
+              <td>해커톤 관련 업무 연락, 법인정보 조회, 사후관리</td>
+            </tr>
+            <tr>
+              <th>수집 항목</th>
+              <td>성명, 생년월일, 주소, 연락처, e-mail, 소속 등 지원서 전체 항목</td>
+            </tr>
+            <tr>
+              <th>보유 기간</th>
+              <td>동의일 ~ '26.12.31. (수상자는 '31.12.31.까지)</td>
+            </tr>
+            <tr>
+              <th>거부 시 불이익</th>
+              <td>동의 거부 시 응모 자격 미부여</td>
+            </tr>
+          </table>
+          <div class="form-check">
+            <input class="form-check-input consent-item-personal-info" type="checkbox"
+                   id="pi-check-1" onchange="syncAll('personal-info')">
+            <label class="form-check-label" for="pi-check-1">
+              위 개인정보 수집 및 이용에 동의합니다. (필수)
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 카드: 항목 2 — 개인정보 제3자 제공 동의 -->
+      <div class="consent-card">
+        <div class="consent-card-header" id="consent-header-pi-2" onclick="toggleDetail('consent-header-pi-2')">
+          <span class="fw-bold">2. 개인정보 제3자 제공 동의 (필수)</span>
+          <span class="arrow">&#9660;</span>
+        </div>
+        <div class="consent-card-body">
+          <table class="consent-table">
+            <tr>
+              <th>제공받는 자</th>
+              <td>공동주관, 후원기관 및 협력사</td>
+            </tr>
+            <tr>
+              <th>제공 목적</th>
+              <td>운영, 심사, 시상, 사후관리</td>
+            </tr>
+            <tr>
+              <th>보유 기간</th>
+              <td>해커톤 종료 후 '26.12.31.까지</td>
+            </tr>
+            <tr>
+              <th>거부 시 불이익</th>
+              <td>동의 거부 시 응모 자격 미부여</td>
+            </tr>
+          </table>
+          <div class="form-check">
+            <input class="form-check-input consent-item-personal-info" type="checkbox"
+                   id="pi-check-2" onchange="syncAll('personal-info')">
+            <label class="form-check-label" for="pi-check-2">
+              위 개인정보 제3자 제공에 동의합니다. (필수)
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 전체 동의 -->
+      <div class="consent-all-row">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox"
+                 id="consent-all-personal-info" onchange="toggleAll('personal-info')">
+          <label class="form-check-label fw-bold" for="consent-all-personal-info">
+            전체 동의
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- [동의서 2] 서약서                                           -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="row py-4 border">
+    <p class="h5 text-center fw-bold">서약서<span class="text-danger">*</span></p>
+
+    <div class="col-sm-12 px-4">
+      <!-- 카드: 항목 1 — 저작권·특허 침해 시 책임 확약 -->
+      <div class="consent-card">
+        <div class="consent-card-header" id="consent-header-cr-1" onclick="toggleDetail('consent-header-cr-1')">
+          <span class="fw-bold">1. 저작권·특허 침해 시 책임 확약 (필수)</span>
+          <span class="arrow">&#9660;</span>
+        </div>
+        <div class="consent-card-body">
+          <p class="mb-2" style="font-size: .9rem;">
+            본인은 제출한 작품이 타인의 저작권, 특허권 등 지식재산권을 침해하지 않았음을 확인하며,
+            만일 침해 사실이 확인될 경우 이에 따른 모든 법적 책임을 본인이 부담하고,
+            수상이 취소되거나 상금 등을 반환할 것을 확약합니다.
+          </p>
+          <div class="form-check">
+            <input class="form-check-input consent-item-copyright" type="checkbox"
+                   id="cr-check-1" onchange="syncAll('copyright')">
+            <label class="form-check-label" for="cr-check-1">
+              위 내용에 동의합니다. (필수)
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 카드: 항목 2 — 작품 반환불가, 권리 귀속, 이용 허락 -->
+      <div class="consent-card">
+        <div class="consent-card-header" id="consent-header-cr-2" onclick="toggleDetail('consent-header-cr-2')">
+          <span class="fw-bold">2. 제출 작품 권리 및 이용 허락 (필수)</span>
+          <span class="arrow">&#9660;</span>
+        </div>
+        <div class="consent-card-body">
+          <p class="mb-2" style="font-size: .9rem;">
+            제출된 작품은 반환되지 않으며, 작품에 대한 권리는 응모자에게 귀속됩니다.
+            다만, 주최측은 대회 목적 범위 내에서 해당 작품을 이용할 수 있음을 허락합니다.
+          </p>
+          <div class="form-check">
+            <input class="form-check-input consent-item-copyright" type="checkbox"
+                   id="cr-check-2" onchange="syncAll('copyright')">
+            <label class="form-check-label" for="cr-check-2">
+              위 내용에 동의합니다. (필수)
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 카드: 항목 3 — 분쟁 시 대화·협상 해결 확약 -->
+      <div class="consent-card">
+        <div class="consent-card-header" id="consent-header-cr-3" onclick="toggleDetail('consent-header-cr-3')">
+          <span class="fw-bold">3. 분쟁 발생 시 대화·협상 해결 확약 (필수)</span>
+          <span class="arrow">&#9660;</span>
+        </div>
+        <div class="consent-card-body">
+          <p class="mb-2" style="font-size: .9rem;">
+            본 해커톤과 관련하여 분쟁이 발생할 경우,
+            당사자 간 대화와 협상을 통해 우선적으로 해결할 것을 확약합니다.
+          </p>
+          <div class="form-check">
+            <input class="form-check-input consent-item-copyright" type="checkbox"
+                   id="cr-check-3" onchange="syncAll('copyright')">
+            <label class="form-check-label" for="cr-check-3">
+              위 내용에 동의합니다. (필수)
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 전체 동의 -->
+      <div class="consent-all-row">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox"
+                 id="consent-all-copyright" onchange="toggleAll('copyright')">
+          <label class="form-check-label fw-bold" for="consent-all-copyright">
+            전체 동의
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- Hidden inputs (기존 id 유지 — 검증 프레임워크 호환)          -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="consent-feedback-area">
+    <input type="hidden" id="personal-info-file" name="personal-info-file" value="">
+    <span id="personal-info-file-invalid-feedback" class="invalid-tooltip"></span>
+  </div>
+  <div class="consent-feedback-area">
+    <input type="hidden" id="copyright-file" name="copyright-file" value="">
+    <span id="copyright-file-invalid-feedback" class="invalid-tooltip"></span>
+  </div>
+</div>

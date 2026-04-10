@@ -37,17 +37,15 @@
         <p class="h4 text-center common-line-height fw-bold mb-0" th:text="${#calendars.format(#calendars.createNow(), 'yyyy년 MM월 dd일')}">20XX년 X월 X일</p>
         <p class="h4 text-center common-line-height fw-bold">공군 참모총장 귀하</p>
       </div>
-      <!--  동의서, 기획서 등    -->
+      <!--  동의서 및 제출 서류    -->
       <div class="row py-4 border">
         <div class="position-relative col-sm-12 col-md-3 py-2">
-          <label class="form-label border-bottom pb-2">개인정보제공동의서(mypage)<span class="text-danger">*</span></label>
-          <a th:href="@{/mypage/application/personal-info-file}" class="d-block text-decoration-none"
-             th:text="${personalInfoFileName}" target="_blank">개인정보제공동의서.pdf</a>
+          <label class="form-label border-bottom pb-2">개인정보제공동의서<span class="text-danger">*</span></label>
+          <span class="consent-badge-agreed">동의완료</span>
         </div>
         <div class="position-relative col-sm-12 col-md-3 py-2">
-          <label class="form-label border-bottom pb-2">저작권동의서<span class="text-danger">*</span></label>
-          <a th:href="@{/mypage/application/copyright-file}" class="d-block text-decoration-none"
-             th:text="${copyrightFileName}" target="_blank">저작권동의서.pdf</a>
+          <label class="form-label border-bottom pb-2">서약서<span class="text-danger">*</span></label>
+          <span class="consent-badge-agreed">동의완료</span>
         </div>
         <div class="position-relative col-sm-12 col-md-3 py-2">
           <label class="form-label border-bottom pb-2">아이디어 기획서<span class="text-danger">*</span></label>
