@@ -23,15 +23,15 @@
                 <form th:action="@{/logout}" type="POST">
                     <input type="submit" class="d-block btn btn-lg btn-link mx-auto text-decoration-none" value="로그아웃">
                 </form>
-                <div class="row">
+                <div class="row g-3 mt-4">
                     <div class="col-md-4 col-sm-12">
-                        <button class="btn btn-success btn-lg w-auto shadow mt-5 mx-auto text-white d-block" onclick="location.href='/alr20/mypage/application'">지원서 조회</button>
+                        <button class="btn btn-success btn-lg w-100 shadow py-3 text-white" onclick="location.href='/alr20/mypage/application'">지원서 조회</button>
                     </div>
                     <div class="col-md-4 col-sm-12">
-                        <button class="btn btn-warning btn-lg w-auto shadow mt-5 mx-auto text-white d-block" onclick="location.href='/alr20/mypage/application/edit'">지원서 수정</button>
+                        <button class="btn btn-warning btn-lg w-100 shadow py-3 text-white" onclick="location.href='/alr20/mypage/application/edit'">지원서 수정</button>
                     </div>
                     <div class="col-md-4 col-sm-12">
-                        <button class="btn btn-primary btn-lg w-auto shadow mt-5 mx-auto text-white d-block" onclick="printApplication()">지원서 출력</button>
+                        <button class="btn btn-primary btn-lg w-100 shadow py-3 text-white" onclick="printApplication()">지원서 출력</button>
                     </div>
                 </div>
             </div>
