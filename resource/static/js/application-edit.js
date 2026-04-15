@@ -113,10 +113,8 @@ const setFileInfo = async (selector) => {
     const meta = { origFileName, extension};
 
     switch (selector) {
-        case '#copyright-file':    fileMeta.copyrightFileInfo   = meta; break;
         case '#idea-plan-file':   fileMeta.ideaPlanFileInfo    = meta; break;
         case '#idea-summary-file':fileMeta.ideaSummaryFileInfo = meta; break;
-        case '#personal-info-file':fileMeta.personalInfoFileInfo= meta; break;
         default: break;
     }
 }
@@ -128,25 +126,34 @@ const getErrorMessage = () => {
         else if(elem.includes('participant-motivation')) msg +=  '참가동기*' + ' : ' + $(`#participant-motivation-invalid-feedback`).text() + '\n';
         else if(elem.includes('recognition-path')) msg +=  '인지경로*' + ' : ' + $(`#recognition-path-invalid-feedback`).text() + '\n';
         else if(elem.includes('member')) msg +=  '팀원정보*' + ' : ' + '팀원정보를 확인하세요.' + '\n';
+        else if(elem.includes('personal-ifno-file')) msg +=  '개인정보 동의서: 모든 항목에 동의해주세요.\n';
+        else if(elem.includes('copyright-file')) msg +=  '서약서: 모든 항목에 동의해주세요\n';
         else msg += $(`label[for='${elem}']`).text() + ' : ' + $(`#${elem}-invalid-feedback`).text() + '\n';
     })
     return msg;
 }
 const fileMeta = {
-    copyrightFileInfo: null,
     ideaPlanFileInfo:  null,
-    ideaSummaryFileInfo: null,
-    personalInfoFileInfo: null
+    ideaSummaryFileInfo: null
 };
+
+const consentMeta={
+    copyrightConsentInfo:{agreed:false},
+    personalInfoConsentInfo:{agreed:false}
+}
+
+function updateConsentMeta(selector, propName){
+    const agreed =$(selector).val() == 'AGREED';
+    consentMeta[propName].agreed= agreed;
+}
+
 
 const submitApplication = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     const fileSelectors = [
-        { selector: '#copyright-file',     partName: 'copyrightFile' },
         { selector: '#idea-plan-file',    partName: 'ideaPlanFile' },
-        { selector: '#idea-summary-file', partName: 'ideaSummaryFile' },
-        { selector: '#personal-info-file',partName: 'personalInfoFile' }
+        { selector: '#idea-summary-file', partName: 'ideaSummaryFile' }
     ];
     for (const {selector, partName} of fileSelectors) {
         // ① 메타 정보 채우기
@@ -176,7 +183,11 @@ const submitApplication = async (e) => {
         [JSON.stringify(fileMeta)],
         {type: 'application/json'}
     );
+    
     formData.append('fileMeta', fileMetaBlob); // 백엔드가 요구하는 키
+    updateConsentMeta('#copyright-file', 'copyrightConsentInfo');
+    updateConsentMeta('#personal-info-file', 'personalInfoConsentInfo');
+
 
     // var header = $("meta[name='_csrf_header']").attr('content');
     // var token = $("meta[name='_csrf']").attr('content');
