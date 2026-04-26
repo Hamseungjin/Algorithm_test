@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { ADDRESS_REGEX } from "@/lib/constants";
 import { useWalletStore } from "@/store/walletStore";
 
@@ -12,12 +12,6 @@ export function WalletInput(): JSX.Element {
 
   const [value, setValue] = useState<string>(storedAddress);
   const [touched, setTouched] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (storedAddress !== value && (storedAddress === "" || status === "success")) {
-      setValue(storedAddress);
-    }
-  }, [storedAddress, status, value]);
 
   const trimmed = value.trim();
   const isValid = ADDRESS_REGEX.test(trimmed);
