@@ -10,6 +10,7 @@ import type {
 } from "@/types";
 import { ADDRESS_REGEX } from "@/lib/constants";
 import { buildChartData, computeMetrics } from "@/lib/calculations";
+import { withBasePath } from "@/lib/basePath";
 
 interface ApiError {
   error: string;
@@ -124,13 +125,13 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
     try {
       const [tradesResp, profileResp] = await Promise.all([
         safeFetch<{ trades: Trade[] }>(
-          `/api/trades?address=${trimmed}`,
+          withBasePath(`/api/trades?address=${trimmed}`),
           { trades: [] },
           warnings,
           "Trades",
         ),
         safeFetch<{ profile: PolymarketProfile }>(
-          `/api/profile?address=${trimmed}`,
+          withBasePath(`/api/profile?address=${trimmed}`),
           { profile: EMPTY_PROFILE },
           warnings,
           "Profile",
@@ -143,7 +144,7 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
       set({ trades, profile, step: 2 });
 
       const transfersResp = await safeFetch<{ transfers: Transfer[] }>(
-        `/api/transfers?address=${trimmed}`,
+        withBasePath(`/api/transfers?address=${trimmed}`),
         { transfers: [] },
         warnings,
         "Transfers",

@@ -97,9 +97,13 @@ cp .env.local.example .env.local
 ```env
 POLYGONSCAN_API_KEY=your_polygonscan_api_key_here
 NEXT_PUBLIC_RPC_URL=https://polygon-rpc.com
+NEXT_PUBLIC_BASE_PATH=/next
 ```
 
 > `POLYGONSCAN_API_KEY`가 없거나 한도를 초과하면 자동으로 RPC `eth_getLogs` 폴백으로 전환됩니다.
+>
+> `NEXT_PUBLIC_BASE_PATH`는 nginx 등 리버스 프록시 뒤에서 서브 경로(예: `/next/`)로
+> 서비스할 때 사용합니다. 도메인 루트에서 서비스하면 비워 두세요.
 
 ### 4. 개발 서버 실행
 
@@ -107,7 +111,8 @@ NEXT_PUBLIC_RPC_URL=https://polygon-rpc.com
 npm run dev
 ```
 
-브라우저에서 `http://localhost:3000` 으로 접속합니다.
+브라우저에서 `http://localhost:3001` 으로 접속합니다.
+basePath가 `/next`로 설정돼 있다면 `http://localhost:3001/next` 로 접속해야 합니다.
 
 ### 5. 사용 방법
 
@@ -125,6 +130,7 @@ npm run dev
 | --- | --- | --- | --- |
 | `POLYGONSCAN_API_KEY` | 권장 | (없음) | Polygonscan 무료 키. 미입력 시 RPC 폴백 사용. 무료 키는 5 req/sec 제한이 있어 코드 내에서 250ms delay를 둠. |
 | `NEXT_PUBLIC_RPC_URL` | 선택 | `https://polygon-rpc.com` | 1차 Polygon RPC. 실패 시 `https://rpc.ankr.com/polygon`으로 자동 폴백. |
+| `NEXT_PUBLIC_BASE_PATH` | 선택 | `""` | 리버스 프록시 서브 경로(예: `/next`). 설정 시 모든 페이지/자산/API가 해당 prefix 아래에서 서비스됩니다. |
 
 `.env.local` 파일은 `.gitignore`로 커밋되지 않습니다.
 
@@ -390,7 +396,64 @@ TTL 캐시를 사용합니다(`lib/cache.ts`). 동일 지갑 주소를 5분 이�
    - `NEXT_PUBLIC_RPC_URL` (선택)
 3. Deploy 클릭. 별도 빌드 설정 불필요.
 
-> API 라우트는 모두 `runtime = "nodejs"`, `dynamic = "force-dynamic"`으로
+---
+
+## 자체 서버 배포 (nginx 리버스 프록시 / 서브 경로)
+
+도메인 루트가 다른 앱에 점유돼 있고 이 앱을 **`/next/` 서브 경로**로 서비스하고
+싶을 때 사용하는 패턴입니다.
+
+### 1) Next.js 측 설정
+
+`.env.local`에 다음을 추가하면 모든 페이지·자산·API가 `/next/` 아래로 서비스됩니다.
+
+```env
+NEXT_PUBLIC_BASE_PATH=/next
+```
+
+`package.json`의 dev/start 스크립트가 포트 **3001**을 사용하도록 이미 고정돼 있습니다.
+
+```bash
+NEXT_PUBLIC_BASE_PATH=/next npm run build
+NEXT_PUBLIC_BASE_PATH=/next npm run start   # 0.0.0.0:3001
+```
+
+> **중요**: `basePath`는 빌드 타임에 정적으로 결정됩니다. 환경 변수가 빌드와
+> 런타임 모두에 같은 값으로 들어가야 합니다. PM2/systemd로 띄울 때는 서비스
+> 정의에 `Environment=NEXT_PUBLIC_BASE_PATH=/next`를 같이 넣어주세요.
+
+### 2) nginx 설정 예시
+
+```nginx
+location /next/ {
+    proxy_pass http://127.0.0.1:3001;     # 끝에 슬래시(/) 없음 — 그대로 전달
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Upgrade $http_upgrade;   # HMR 웹소켓
+    proxy_set_header Connection "upgrade";
+}
+```
+
+`proxy_pass`에 trailing slash가 없어야 nginx가 `/next/...` 경로를 그대로
+포워딩합니다. 그래야 Next.js의 `basePath: "/next"`와 정확히 매칭됩니다.
+
+### 3) 동작 검증
+
+| URL | 응답 |
+| --- | --- |
+| `https://your-domain/next` 또는 `/next/` | 200 (메인 페이지) |
+| `https://your-domain/next/api/profile?address=0x...` | 200 (JSON) |
+| `https://your-domain/next/_next/static/...` | 200 (정적 자산) |
+
+### 4) 무한 redirect가 났던 이유
+
+`basePath` 미설정 + `proxy_pass`가 `/next/...`를 그대로 전달 → Next.js는 `/next/`
+라우트를 모름 → 잘못된 경로로 redirect → nginx가 다시 `/next/...`로 포워딩 →
+무한 루프. `NEXT_PUBLIC_BASE_PATH=/next`로 빌드하면 Next.js가 `/next/`를 자기
+루트로 인식해서 해결됩니다.
 > 설정되어 있어 Vercel 서버리스 함수로 동작합니다.
 
 ---
