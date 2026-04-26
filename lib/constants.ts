@@ -7,17 +7,25 @@ export const POLYMARKET_ADDRESSES: ReadonlySet<string> = new Set<string>([
 ]);
 
 export const USDC_CONTRACT_ADDRESS = "0x2791bca1f2de4661ed88a30c99a7a9449aa84174";
+export const POLYGON_CHAIN_ID = 137;
 
 export const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
 
 export const CLOB_BASE_URL = "https://clob.polymarket.com";
 export const GAMMA_BASE_URL = "https://gamma-api.polymarket.com";
-export const POLYGONSCAN_BASE_URL = "https://api.polygonscan.com/api";
+
+export const ETHERSCAN_V2_BASE_URL = "https://api.etherscan.io/v2/api";
+
+export const PUBLIC_POLYGON_RPCS: readonly string[] = [
+  "https://polygon-rpc.com",
+  "https://polygon-bor-rpc.publicnode.com",
+  "https://1rpc.io/matic",
+  "https://polygon.llamarpc.com",
+];
 
 export const PRIMARY_RPC_URL =
-  process.env.NEXT_PUBLIC_RPC_URL ?? "https://polygon-rpc.com";
-export const FALLBACK_RPC_URL = "https://rpc.ankr.com/polygon";
+  process.env.NEXT_PUBLIC_RPC_URL?.trim() || PUBLIC_POLYGON_RPCS[0]!;
 
 export const RPC_BLOCK_RANGE = 9_000;
 export const FETCH_TIMEOUT_MS = 10_000;

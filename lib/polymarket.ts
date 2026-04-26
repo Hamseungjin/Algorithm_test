@@ -5,6 +5,7 @@ import {
 } from "./constants";
 import { fetchJson, FetchError, sleep } from "./fetcher";
 import { getCached, setCached } from "./cache";
+import { buildL2Headers, getClobCredentials } from "./clobAuth";
 import type {
   PolymarketProfile,
   RawTrade,
@@ -32,6 +33,8 @@ function normalizeTrade(raw: RawTrade): Trade {
   };
 }
 
+const TRADES_PATH = "/trades";
+
 async function fetchTradesPage(
   address: string,
   cursor: string | undefined,
@@ -42,15 +45,28 @@ async function fetchTradesPage(
   });
   if (cursor) params.set("next_cursor", cursor);
 
-  const url = `${CLOB_BASE_URL}/trades?${params.toString()}`;
+  const url = `${CLOB_BASE_URL}${TRADES_PATH}?${params.toString()}`;
+  const creds = getClobCredentials();
+  const headers: Record<string, string> = creds
+    ? buildL2Headers(creds, "GET", TRADES_PATH)
+    : {};
 
   let lastError: unknown = null;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
-      return await fetchJson<TradesApiResponse>(url);
+      return await fetchJson<TradesApiResponse>(url, { headers });
     } catch (error) {
       lastError = error;
       if (error instanceof FetchError) {
+        if (error.status === 401) {
+          throw new FetchError(
+            creds
+              ? `CLOB rejected your API credentials (401). Verify CLOB_API_KEY / CLOB_SECRET / CLOB_PASSPHRASE / CLOB_ADDRESS.`
+              : `CLOB requires authentication (401). Set CLOB_API_KEY, CLOB_SECRET, CLOB_PASSPHRASE, and CLOB_ADDRESS in .env.local.`,
+            401,
+            url,
+          );
+        }
         if (error.status === 400) throw error;
         if (error.status === 408 || error.status === 429 || error.status >= 500) {
           await sleep(500 * (attempt + 1));

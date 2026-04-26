@@ -98,12 +98,24 @@ cp .env.local.example .env.local
 POLYGONSCAN_API_KEY=your_polygonscan_api_key_here
 NEXT_PUBLIC_RPC_URL=https://polygon-rpc.com
 NEXT_PUBLIC_BASE_PATH=/next
+
+# Polymarket CLOB은 이제 인증을 요구합니다. 4개 모두 채워야 합니다.
+CLOB_API_KEY=
+CLOB_SECRET=
+CLOB_PASSPHRASE=
+CLOB_ADDRESS=
 ```
 
-> `POLYGONSCAN_API_KEY`가 없거나 한도를 초과하면 자동으로 RPC `eth_getLogs` 폴백으로 전환됩니다.
+> `POLYGONSCAN_API_KEY`가 없거나 한도를 초과하면 자동으로 RPC `eth_getLogs` 폴백으로
+> 전환됩니다. V1 엔드포인트(`api.polygonscan.com`)는 폐기됐고, 같은 키로 V2
+> (`api.etherscan.io/v2/api?chainid=137`)를 호출합니다.
 >
 > `NEXT_PUBLIC_BASE_PATH`는 nginx 등 리버스 프록시 뒤에서 서브 경로(예: `/next/`)로
 > 서비스할 때 사용합니다. 도메인 루트에서 서비스하면 비워 두세요.
+>
+> `CLOB_*` 4종은 [Polymarket clob-client](https://github.com/Polymarket/clob-client)의
+> `derive-api-key` 플로우로 발급받습니다. `CLOB_ADDRESS`는 API 키를 만든 본인
+> 지갑(funder)이며, 분석할 대상 지갑과는 다릅니다.
 
 ### 4. 개발 서버 실행
 
@@ -128,9 +140,13 @@ basePath가 `/next`로 설정돼 있다면 `http://localhost:3001/next` 로 접�
 
 | 변수 | 필수 여부 | 기본값 | 설명 |
 | --- | --- | --- | --- |
-| `POLYGONSCAN_API_KEY` | 권장 | (없음) | Polygonscan 무료 키. 미입력 시 RPC 폴백 사용. 무료 키는 5 req/sec 제한이 있어 코드 내에서 250ms delay를 둠. |
-| `NEXT_PUBLIC_RPC_URL` | 선택 | `https://polygon-rpc.com` | 1차 Polygon RPC. 실패 시 `https://rpc.ankr.com/polygon`으로 자동 폴백. |
+| `POLYGONSCAN_API_KEY` | 권장 | (없음) | Etherscan / Polygonscan V2 키 (둘은 같은 키). 미입력 시 RPC 폴백 사용. 무료 키는 5 req/sec 제한이 있어 250ms delay를 둠. |
+| `NEXT_PUBLIC_RPC_URL` | 선택 | `https://polygon-rpc.com` | 1차 Polygon RPC. 실패 시 `polygon-bor-rpc.publicnode.com`, `1rpc.io/matic`, `polygon.llamarpc.com` 순서로 자동 폴백 (모두 무료/인증 불필요). |
 | `NEXT_PUBLIC_BASE_PATH` | 선택 | `""` | 리버스 프록시 서브 경로(예: `/next`). 설정 시 모든 페이지/자산/API가 해당 prefix 아래에서 서비스됩니다. |
+| `CLOB_API_KEY` | **필수** | (없음) | Polymarket CLOB API 키. 인증 안 하면 401. |
+| `CLOB_SECRET` | **필수** | (없음) | CLOB API HMAC 시크릿 (base64). |
+| `CLOB_PASSPHRASE` | **필수** | (없음) | CLOB API 패스프레이즈. |
+| `CLOB_ADDRESS` | **필수** | (없음) | API 키를 발급한 본인 지갑 주소 (funder). 분석 대상 지갑과 다름. |
 
 `.env.local` 파일은 `.gitignore`로 커밋되지 않습니다.
 
@@ -481,11 +497,15 @@ nginx의 `location /next/`와 항상 일치합니다.
 
 | 증상 | 원인 / 해결 |
 | --- | --- |
-| `Polygonscan: NOTOK` 에러 | 무료 API 한도 초과. 잠시 기다리거나 키를 비우면 RPC 폴백 사용. |
+| `CLOB rejected your API credentials (401)` | 4개(`CLOB_API_KEY`/`SECRET`/`PASSPHRASE`/`ADDRESS`) 중 하나가 잘못. clob-client `derive-api-key`로 재발급 후 재시작. |
+| `CLOB requires authentication (401). Set CLOB_API_KEY...` | CLOB 인증 env가 비어 있음. 4개 모두 채우고 빌드/start 재시작. |
+| `Etherscan V2: NOTOK` | V2 키 한도 초과 또는 잘못된 키. 잠시 기다리거나 키를 비워 RPC 폴백 사용. |
+| `All N RPCs failed.` 메시지 | 사용 가능한 RPC가 모두 실패. 각 RPC별 상세 에러가 메시지에 포함됨. `NEXT_PUBLIC_RPC_URL`에 유료 RPC를 넣거나 잠시 후 재시도. |
+| `Unauthorized: ... ankr ... API key` | Ankr 무료 fallback이 폐기됨. 본 코드는 더 이상 인증 없는 Ankr를 호출하지 않으므로, 이 메시지가 보이면 `NEXT_PUBLIC_RPC_URL`로 본인의 Ankr URL을 직접 지정해야 합니다. |
 | `Request timed out after 10000ms` | RPC 응답 지연. `NEXT_PUBLIC_RPC_URL`을 다른 엔드포인트로 변경하거나 재시도. |
 | 거래는 있는데 입출금이 0 | 해당 지갑이 Polymarket 컨트랙트하고만 USDC를 주고받았을 가능성. 모두 `internal`로 분류된 결과. |
 | `Invalid wallet address` | 0x로 시작하는 정확히 40자리 16진수만 허용. 체크섬 형식 OK. |
-| Gamma API가 빈 객체 반환 | Polymarket에 등록되지 않은 지갑. 이 경우 자체 PnL/포지션은 0으로 처리되며, True ROI는 입출금만으로 계산. |
+| Gamma API가 빈 객체 반환 | Polymarket에 등록되지 않은 지갑. 자체 PnL/포지션은 0으로 처리되며, True ROI는 입출금만으로 계산. |
 
 ---
 

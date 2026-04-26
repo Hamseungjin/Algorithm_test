@@ -1,9 +1,10 @@
 import {
-  FALLBACK_RPC_URL,
-  POLYGONSCAN_BASE_URL,
+  ETHERSCAN_V2_BASE_URL,
   POLYGONSCAN_RATE_LIMIT_DELAY_MS,
+  POLYGON_CHAIN_ID,
   POLYMARKET_ADDRESSES,
   PRIMARY_RPC_URL,
+  PUBLIC_POLYGON_RPCS,
   RPC_BLOCK_RANGE,
   TRANSFER_TOPIC,
   USDC_CONTRACT_ADDRESS,
@@ -63,11 +64,12 @@ function rawTxToTransfer(
   };
 }
 
-async function fetchFromPolygonscan(
+async function fetchFromEtherscanV2(
   address: string,
   apiKey: string,
 ): Promise<RawPolygonscanTx[]> {
   const params = new URLSearchParams({
+    chainid: String(POLYGON_CHAIN_ID),
     module: "account",
     action: "tokentx",
     contractaddress: USDC_CONTRACT_ADDRESS,
@@ -76,7 +78,7 @@ async function fetchFromPolygonscan(
     apikey: apiKey,
   });
 
-  const url = `${POLYGONSCAN_BASE_URL}?${params.toString()}`;
+  const url = `${ETHERSCAN_V2_BASE_URL}?${params.toString()}`;
   const response = await fetchJson<PolygonscanResponse>(url);
 
   if (response.status !== "1") {
@@ -84,7 +86,7 @@ async function fetchFromPolygonscan(
       const message = response.result.toLowerCase();
       if (message.includes("no transactions")) return [];
       throw new FetchError(
-        `Polygonscan: ${response.message} (${response.result})`,
+        `Etherscan V2: ${response.message} (${response.result})`,
         429,
         url,
       );
@@ -145,9 +147,30 @@ function dataToAmount(data: string): number {
   return Number(BigInt(`0x${clean}`)) / USDC_DIVISOR;
 }
 
+function rpcCandidates(): string[] {
+  const seen = new Set<string>();
+  const list: string[] = [];
+  for (const url of [PRIMARY_RPC_URL, ...PUBLIC_POLYGON_RPCS]) {
+    if (!url) continue;
+    if (seen.has(url)) continue;
+    seen.add(url);
+    list.push(url);
+  }
+  return list;
+}
+
+function shortRpcLabel(url: string): string {
+  try {
+    const parsed = new URL(url);
+    return parsed.host + parsed.pathname.replace(/\/+$/, "");
+  } catch {
+    return url;
+  }
+}
+
 async function fetchTransfersViaRpc(address: string): Promise<RawPolygonscanTx[]> {
-  const rpcUrls = [PRIMARY_RPC_URL, FALLBACK_RPC_URL];
-  let lastError: unknown = null;
+  const rpcUrls = rpcCandidates();
+  const errors: string[] = [];
 
   for (const rpcUrl of rpcUrls) {
     try {
@@ -228,14 +251,16 @@ async function fetchTransfersViaRpc(address: string): Promise<RawPolygonscanTx[]
       result.sort((a, b) => Number(a.timeStamp) - Number(b.timeStamp));
       return result;
     } catch (error) {
-      lastError = error;
+      const message = error instanceof Error ? error.message : "Unknown";
+      errors.push(`${shortRpcLabel(rpcUrl)}: ${message}`);
     }
   }
 
-  if (lastError instanceof Error) {
-    throw new FetchError(`RPC fallback failed: ${lastError.message}`, 500, "rpc");
-  }
-  throw new FetchError("RPC fallback failed", 500, "rpc");
+  throw new FetchError(
+    `All ${rpcUrls.length} RPCs failed. ${errors.join(" | ")}`,
+    500,
+    "rpc",
+  );
 }
 
 export async function getUSDCTransfers(address: string): Promise<Transfer[]> {
@@ -243,20 +268,39 @@ export async function getUSDCTransfers(address: string): Promise<Transfer[]> {
   const cached = getCached<Transfer[]>("transfers", cacheKey);
   if (cached) return cached;
 
-  const apiKey = process.env.POLYGONSCAN_API_KEY ?? "";
+  const apiKey =
+    process.env.POLYGONSCAN_API_KEY?.trim() ??
+    process.env.ETHERSCAN_API_KEY?.trim() ??
+    "";
   let rawTxs: RawPolygonscanTx[] = [];
+  const errors: string[] = [];
 
   if (apiKey && apiKey !== "your_polygonscan_api_key_here") {
     try {
       await sleep(POLYGONSCAN_RATE_LIMIT_DELAY_MS);
-      rawTxs = await fetchFromPolygonscan(address, apiKey);
+      rawTxs = await fetchFromEtherscanV2(address, apiKey);
+      const transfers = rawTxs.map((raw) => rawTxToTransfer(raw, address));
+      setCached("transfers", cacheKey, transfers);
+      return transfers;
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown";
-      console.warn(`Polygonscan failed, falling back to RPC: ${message}`);
-      rawTxs = await fetchTransfersViaRpc(address);
+      errors.push(`Etherscan V2: ${message}`);
+      console.warn(`Etherscan V2 failed, falling back to RPC: ${message}`);
     }
-  } else {
+  }
+
+  try {
     rawTxs = await fetchTransfersViaRpc(address);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown";
+    if (errors.length > 0) {
+      throw new FetchError(
+        `${errors.join(" | ")} | RPC: ${message}`,
+        502,
+        "transfers",
+      );
+    }
+    throw error;
   }
 
   const transfers = rawTxs.map((raw) => rawTxToTransfer(raw, address));
