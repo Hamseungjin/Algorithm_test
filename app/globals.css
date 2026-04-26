@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background-color: #0b0d10;
+  color: #f1f5f9;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #13171c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262d36;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+@layer components {
+  .card {
+    @apply bg-surface border border-border rounded-xl p-5 shadow-sm;
+  }
+  .card-hover {
+    @apply transition-colors hover:border-slate-600;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-surfaceAlt px-3 py-2 text-sm text-textPrimary transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .input {
+    @apply w-full rounded-lg border border-border bg-surfaceAlt px-4 py-3 text-sm text-textPrimary placeholder:text-slate-500 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30;
+  }
+  .table-header {
+    @apply text-left text-xs font-semibold uppercase tracking-wider text-textSecondary;
+  }
+}
