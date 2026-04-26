@@ -5,6 +5,7 @@ const nextConfig = {
   reactStrictMode: true,
   basePath,
   assetPrefix: basePath || undefined,
+  trailingSlash: true,
   experimental: {
     typedRoutes: false,
   },

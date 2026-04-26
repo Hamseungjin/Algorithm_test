@@ -440,21 +440,40 @@ location /next/ {
 `proxy_pass`에 trailing slash가 없어야 nginx가 `/next/...` 경로를 그대로
 포워딩합니다. 그래야 Next.js의 `basePath: "/next"`와 정확히 매칭됩니다.
 
-### 3) 동작 검증
+### 3) trailing slash 일치
+
+`next.config.mjs`는 `trailingSlash: true`로 설정돼 있습니다. 사용자의 nginx
+location은 `/next/` (trailing slash 있음)이므로, Next.js가 모든 응답·redirect를
+trailing slash 형태로 만들어야 nginx와 일관됩니다.
+
+이 설정 없이는 다음과 같이 무한 redirect가 납니다:
+
+1. 브라우저: `GET /next/`
+2. nginx: `location /next/` 매칭 → `127.0.0.1:3001/next/` 로 전달
+3. Next.js (default `trailingSlash: false`): `/next/` → **308 redirect → `/next`** (slash 제거)
+4. 브라우저: `GET /next` (slash 없음)
+5. nginx: `location /next/` 안 맞음 → fallback location (예: code-server)
+6. fallback이 어떤 경로로든 redirect → 다시 `/next/` 로 → **루프**
+
+`trailingSlash: true`로 두면 Next.js가 항상 trailing slash 버전으로 redirect하므로
+nginx의 `location /next/`와 항상 일치합니다.
+
+### 4) 동작 검증
 
 | URL | 응답 |
 | --- | --- |
-| `https://your-domain/next` 또는 `/next/` | 200 (메인 페이지) |
-| `https://your-domain/next/api/profile?address=0x...` | 200 (JSON) |
+| `https://your-domain/next/` | 200 (메인 페이지) |
+| `https://your-domain/next` | 308 → `/next/` |
+| `https://your-domain/next/api/profile/?address=0x...` | 200 (JSON) |
 | `https://your-domain/next/_next/static/...` | 200 (정적 자산) |
 
-### 4) 무한 redirect가 났던 이유
+### 5) 정리
 
-`basePath` 미설정 + `proxy_pass`가 `/next/...`를 그대로 전달 → Next.js는 `/next/`
-라우트를 모름 → 잘못된 경로로 redirect → nginx가 다시 `/next/...`로 포워딩 →
-무한 루프. `NEXT_PUBLIC_BASE_PATH=/next`로 빌드하면 Next.js가 `/next/`를 자기
-루트로 인식해서 해결됩니다.
-> 설정되어 있어 Vercel 서버리스 함수로 동작합니다.
+세 조건이 모두 맞아야 합니다:
+
+- **빌드/런타임 환경변수**: `NEXT_PUBLIC_BASE_PATH=/next` (빌드와 start 모두)
+- **`trailingSlash: true`** (이미 `next.config.mjs`에 설정됨)
+- **nginx `proxy_pass` 끝에 슬래시 없음** (`http://127.0.0.1:3001;` 그대로)
 
 ---
 
