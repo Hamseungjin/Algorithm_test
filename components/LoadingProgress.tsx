@@ -15,6 +15,7 @@ export function LoadingProgress(): JSX.Element | null {
   const status = useWalletStore((s) => s.status);
   const step = useWalletStore((s) => s.step);
   const error = useWalletStore((s) => s.error);
+  const warnings = useWalletStore((s) => s.warnings);
   const analyze = useWalletStore((s) => s.analyze);
   const address = useWalletStore((s) => s.address);
 
@@ -24,14 +25,23 @@ export function LoadingProgress(): JSX.Element | null {
     return (
       <div className="card border-danger/40 bg-danger/5">
         <div className="flex items-start justify-between gap-4">
-          <div>
+          <div className="min-w-0 flex-1">
             <h3 className="text-base font-semibold text-danger">Analysis failed</h3>
             <p className="mt-1 text-sm text-textSecondary">{error ?? "Unknown error"}</p>
+            {warnings.length > 0 ? (
+              <ul className="mt-3 space-y-1 text-xs text-textSecondary">
+                {warnings.map((w, i) => (
+                  <li key={i} className="break-all">
+                    • {w}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
           {address ? (
             <button
               type="button"
-              className="btn-secondary"
+              className="btn-secondary shrink-0"
               onClick={() => {
                 void analyze(address);
               }}

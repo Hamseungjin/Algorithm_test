@@ -8,6 +8,7 @@ import { AssetChart } from "@/components/AssetChart";
 import { PnLComparison } from "@/components/PnLComparison";
 import { TradeLogTable } from "@/components/TradeLogTable";
 import { SkeletonGrid } from "@/components/SkeletonCard";
+import { WarningBanner } from "@/components/WarningBanner";
 
 export default function HomePage(): JSX.Element {
   const status = useWalletStore((s) => s.status);
@@ -54,6 +55,8 @@ export default function HomePage(): JSX.Element {
           </p>
         </div>
       ) : null}
+
+      {status === "success" ? <WarningBanner /> : null}
 
       {status === "success" && !showEmpty ? (
         <div className="flex flex-col gap-6 animate-fade-in">

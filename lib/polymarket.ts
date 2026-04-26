@@ -3,7 +3,7 @@ import {
   GAMMA_BASE_URL,
   TRADES_PAGE_LIMIT,
 } from "./constants";
-import { fetchJson } from "./fetcher";
+import { fetchJson, FetchError, sleep } from "./fetcher";
 import { getCached, setCached } from "./cache";
 import type {
   PolymarketProfile,
@@ -32,28 +32,63 @@ function normalizeTrade(raw: RawTrade): Trade {
   };
 }
 
+async function fetchTradesPage(
+  address: string,
+  cursor: string | undefined,
+): Promise<TradesApiResponse> {
+  const params = new URLSearchParams({
+    maker_address: address,
+    limit: String(TRADES_PAGE_LIMIT),
+  });
+  if (cursor) params.set("next_cursor", cursor);
+
+  const url = `${CLOB_BASE_URL}/trades?${params.toString()}`;
+
+  let lastError: unknown = null;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      return await fetchJson<TradesApiResponse>(url);
+    } catch (error) {
+      lastError = error;
+      if (error instanceof FetchError) {
+        if (error.status === 400) throw error;
+        if (error.status === 408 || error.status === 429 || error.status >= 500) {
+          await sleep(500 * (attempt + 1));
+          continue;
+        }
+        if (error.status === 0) {
+          await sleep(500 * (attempt + 1));
+          continue;
+        }
+        throw error;
+      }
+      await sleep(500 * (attempt + 1));
+    }
+  }
+
+  if (lastError instanceof Error) throw lastError;
+  throw new Error("Unknown CLOB error");
+}
+
 export async function fetchAllTrades(address: string): Promise<Trade[]> {
   const cacheKey = address.toLowerCase();
   const cached = getCached<Trade[]>("trades", cacheKey);
   if (cached) return cached;
 
   const trades: Trade[] = [];
+  const seenIds = new Set<string>();
   let cursor: string | undefined;
   let safetyCounter = 0;
   const safetyMax = 200;
 
   do {
-    const params = new URLSearchParams({
-      maker_address: address,
-      limit: String(TRADES_PAGE_LIMIT),
-    });
-    if (cursor) params.set("next_cursor", cursor);
-
-    const url = `${CLOB_BASE_URL}/trades?${params.toString()}`;
-    const response = await fetchJson<TradesApiResponse>(url);
+    const response = await fetchTradesPage(address, cursor);
 
     if (Array.isArray(response.data)) {
       for (const raw of response.data) {
+        const dedupeKey = `${raw.id}-${raw.transaction_hash}`;
+        if (seenIds.has(dedupeKey)) continue;
+        seenIds.add(dedupeKey);
         trades.push(normalizeTrade(raw));
       }
     }
