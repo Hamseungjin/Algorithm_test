@@ -3,7 +3,7 @@
     <div class="modal-content">
 
       <div class="modal-header">
-        <h5 class="modal-title">관리자 추가</h5>
+        <h5 class="modal-title">관리자 계정 생성</h5>
       </div>
 
       <div class="modal-body">
@@ -28,9 +28,18 @@
             </div>
           </div>
           <div class="row mb-3">
-            <label class="col-sm-2 col-form-label">IP 주소(IPv4)</label>
+            <label class="col-sm-2 col-form-label">이름</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="allowedIpAddress">
+              <input type="text" class="form-control" id="name" placeholder="IP 주소 입력 용도">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-2 col-form-label">권한</label>
+            <div class="col-sm-10">
+              <select class="form-select" id="authority">
+                <option value="ROLE_ADMIN">관리자</option>
+                <option value="ROLE_SUPER_ADMIN">슈퍼 관리자</option>
+              </select>
             </div>
           </div>
         </form>

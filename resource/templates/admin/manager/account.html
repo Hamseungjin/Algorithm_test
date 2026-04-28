@@ -105,7 +105,7 @@
 
       buttons: [
         {
-          text: '<i class="fa fa-plus"></i>추가',
+          text: '<i class="fa fa-plus"></i>관리자 계정 생성',
           className: 'btn btn-primary',
           attr: {
             id : 'insert'
@@ -138,13 +138,15 @@
       const userId = $('#userId').val();
       let password = $('#userPassword').val();
       let confirmUserPassword = $('#confirmUserPassword').val();
-      let allowedIpAddress = $('#allowedIpAddress').val();
+      let name = $('#name').val();
+      let authority = $('#authority option:selected').val();
 
       let data = {
         userId : userId,
         password : password,
         passwordCheck : confirmUserPassword,
-        allowedIpAddress : allowedIpAddress
+        name : name,
+        authority : authority
       };
 
       $.ajax({
