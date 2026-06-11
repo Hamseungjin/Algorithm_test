@@ -33,3 +33,9 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Frontend dependencies and Vite output
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
